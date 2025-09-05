@@ -9,6 +9,17 @@
 </head>
 <body class="bg-light d-flex align-items-center justify-content-center vh-100">
 
+  <!-- ✅ Role check (only admin/superuser allowed) -->
+  <script>
+    const role = localStorage.getItem("role");
+    const isSuperuser = localStorage.getItem("is_superuser");
+
+    if (!(role === "admin" || isSuperuser === "true")) {
+      alert("Access Denied! Only Admin or Superuser can access this page.");
+      window.location.href = "dashboard.html"; // redirect to student or default dashboard
+    }
+  </script>
+
   <div class="card shadow p-4" style="width: 400px; border-radius: 12px;">
     <h3 class="text-center mb-4">Register</h3>
     <form id="registerForm">
@@ -48,11 +59,15 @@
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
+      // ✅ Get token from localStorage
+      const token = localStorage.getItem("token");
+
       try {
         const response = await fetch("http://127.0.0.1:8000/auth/register/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Token ${token}`  // ✅ Send token to backend
           },
           body: JSON.stringify({ username, email, password }),
         });
@@ -60,19 +75,19 @@
         const data = await response.json();
 
         if (response.ok) {
-          message.textContent = "✅ Registration successful! Redirecting to login...";
+          message.textContent = "Registration successful! Redirecting to login...";
           message.className = "text-success fw-bold";
 
           // Redirect to login after 2 seconds
           setTimeout(() => {
-            window.location.href = "login.html";
+            window.location.href = "../login.html";
           }, 2000);
         } else {
-          message.textContent = data.error || "❌ Registration failed!";
+          message.textContent = data.error || JSON.stringify(data);
           message.className = "text-danger fw-bold";
         }
       } catch (error) {
-        message.textContent = "⚠️ Error: " + error.message;
+        message.textContent = "Error: " + error.message;
         message.className = "text-danger fw-bold";  
       }
     });

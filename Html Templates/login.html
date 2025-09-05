@@ -20,7 +20,7 @@
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
         <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
-      </div>
+      </div>  
 
       <button type="submit" class="btn btn-primary w-100">Login</button>
     </form>
@@ -36,49 +36,66 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script>
-    const form = document.getElementById("loginForm");
-    const message = document.getElementById("message");
+<script>
+  const form = document.getElementById("loginForm");
+  const message = document.getElementById("message");
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
 
-      try {
-        const response = await fetch("http://127.0.0.1:8000/auth/login/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        });
+    try {
+      const response = await fetch("http://127.0.0.1:8000/auth/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (response.ok && data.token) {
-          // Save token & username to localStorage
-          localStorage.setItem("authToken", data.token);
-          localStorage.setItem("username", data.username);
+      if (response.ok && data.token) {
+        // Save token & user info
+        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("role", data.role || "");
+        localStorage.setItem("is_superuser", data.is_superuser);
 
-          message.textContent = `✅ ${data.message} (Welcome, ${data.username})`;
-          message.className = "text-success fw-bold";
+        message.textContent = `✅ Welcome, ${data.username}`;
+        message.className = "text-success fw-bold";
 
-          // Redirect to new page after 1 second
-          setTimeout(() => {
-            window.location.href = "dashboard.html";  // change to your page
-          }, 1000);
+        // ✅ Redirect based on role
+        setTimeout(() => {
+          if (data.is_superuser) {
+            window.location.href = "superadmin/dashboard.html";
+          } else {
+            let role = (data.role || "").toLowerCase();
+            if (role === "admin") {
+              window.location.href = "admin/dashboard.html";
+            } else if (role === "student") {
+              window.location.href = "student/dashboard.html";
+            } else if (role === "teacher") {
+              window.location.href = "./teacher/dashboard.html";
+            } else {
+              // fallback if role not recognized
+              window.location.href = "#";
+            }
+          }
+        }, 1000);
 
-        } else {
-          message.textContent = data.msg || "❌ Login failed!";
-          message.className = "text-danger fw-bold";
-        }
-      } catch (error) {
-        message.textContent = "⚠️ Error: " + error.message;
-        message.className = "text-danger fw-bold";  
+      } else {
+        message.textContent = data.msg || "❌ Login failed!";
+        message.className = "text-danger fw-bold";
       }
-    });
-  </script>
+    } catch (error) {
+      message.textContent = "⚠️ Error: " + error.message;
+      message.className = "text-danger fw-bold";
+    }
+  });
+</script>
+
 </body>
-</html>   
+</html>

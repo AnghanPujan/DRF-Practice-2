@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Student Dashboard</a>
+      <div class="ms-auto d-flex align-items-center">
+        <span class="text-white me-3">Welcome, <strong>John Doe</strong></span>
+        <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <nav class="col-md-2 d-none d-md-block bg-light sidebar border-end">
+        <div class="p-3">
+          <h6>Menu</h6>
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Courses</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Assignments</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Results</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Profile</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <h3 class="mb-4">Dashboard Overview</h3>
+
+        <!-- Cards Row -->
+        <div class="row mb-4">
+          <div class="col-md-4">
+            <div class="card text-bg-info mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Enrolled Courses</h5>
+                <p class="card-text fs-3" id="coursesCount">5</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card text-bg-warning mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Pending Assignments</h5>
+                <p class="card-text fs-3" id="assignmentsCount">2</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card text-bg-success mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Current GPA</h5>
+                <p class="card-text fs-3" id="gpaScore">3.8</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assignments Table -->
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            Upcoming Assignments
+          </div>
+          <div class="card-body">
+            <table class="table table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Course</th>
+                  <th>Assignment</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="assignmentTable">
+                <tr>
+                  <td>1</td>
+                  <td>Python Programming</td>
+                  <td>Project Report</td>
+                  <td>10 Sept 2025</td>
+                  <td><span class="badge bg-warning">Pending</span></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Data Science</td>
+                  <td>Lab Work</td>
+                  <td>12 Sept 2025</td>
+                  <td><span class="badge bg-warning">Pending</span></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>Web Development</td>
+                  <td>Quiz</td>
+                  <td>15 Sept 2025</td>
+                  <td><span class="badge bg-success">Completed</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function logout() {
+      alert("You have been logged out!");
+      window.location.href = "/login";
+    }
+
+    // Example: dynamically update values
+    document.getElementById("coursesCount").innerText = 6;
+    document.getElementById("assignmentsCount").innerText = 3;
+    document.getElementById("gpaScore").innerText = 3.9;
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
