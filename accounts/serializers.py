@@ -68,6 +68,5 @@ class CustomUserSerializer(serializers.ModelSerializer):
             TeacherProfile.objects.create(user=user, **teacher_data)
         elif role == "admin" and admin_data:
             AdminProfile.objects.create(user=user, **admin_data)
-
         return user
  

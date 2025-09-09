@@ -104,9 +104,9 @@
     window.location.href = "../login.html"; 
   }
 
-  // Fetch dashboard data from API with token auth
+
   async function loadDashboard() {
-    const token = localStorage.getItem("authToken"); // your saved JWT or DRF token
+    const token = localStorage.getItem("authToken");
     if (!token) {
       alert("You are not logged in!");
       window.location.href = "../login.html";
