@@ -6,12 +6,16 @@ class CustomUser(AbstractUser):
         ("student", "Student"),
         ("teacher", "Teacher"),
         ("admin", "Admin"),
-        ("super admin", "Superadmin")
+        ("super admin", "Superadmin"),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
+    class Meta:
+        db_table = 'custom_user'  
+
     def __str__(self):
         return f"{self.username} ({self.role})"
+
 
 class BaseProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -28,14 +32,23 @@ class StudentProfile(BaseProfile):
     course = models.CharField(max_length=100)
     year = models.IntegerField()
     section = models.CharField(max_length=10)
-    
+
+    class Meta:
+        db_table = "student_profile"  
+
 
 class TeacherProfile(BaseProfile):
     subject = models.CharField(max_length=50)
     department = models.CharField(max_length=100)
     designation = models.CharField(max_length=50)
 
+    class Meta:
+        db_table = 'teacher_profile'  
+
 
 class AdminProfile(BaseProfile):
     office = models.CharField(max_length=50)
     position = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = 'admin_profile'  

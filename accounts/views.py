@@ -121,6 +121,15 @@ class SuperAdminDashboard(APIView):
 
     def delete(self, request, pk):
         user = get_object_or_404(CustomUser, pk=pk)
+
         if user.role == 'super admin':
-            return Response({"message": "Cannot delete a super admin."}, status=status.HTTP_403_FORBIDDEN)
-        return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {"message": "Cannot delete a super admin."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        user.delete()  
+        return Response(
+            {"message": "User deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT
+        )

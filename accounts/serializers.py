@@ -39,34 +39,18 @@ class AdminProfileSerializer(serializers.ModelSerializer):
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
-    # Make nested profiles write_only so they are used only for create/update
-    studentprofile = StudentProfileSerializer(required=False, write_only=True)
-    teacherprofile = TeacherProfileSerializer(required=False, write_only=True)
-    adminprofile = AdminProfileSerializer(required=False, write_only=True)
-
     class Meta:
         model = CustomUser
         fields = [
-            "id", "username", "password", "email", "role", "is_active",
-            "studentprofile", "teacherprofile", "adminprofile"
+            "id", "username", "password", "email", "role", "is_active"
         ]
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {
+            "password": {"write_only": True}
+        }
 
     def create(self, validated_data):
-        role = validated_data.get("role")
-        student_data = validated_data.pop("studentprofile", None)
-        teacher_data = validated_data.pop("teacherprofile", None)
-        admin_data = validated_data.pop("adminprofile", None)
-
-        # Create the user
-        user = CustomUser.objects.create_user(**validated_data)
-
-        # Create the corresponding profile based on role
-        if role == "student" and student_data:
-            StudentProfile.objects.create(user=user, **student_data)
-        elif role == "teacher" and teacher_data:
-            TeacherProfile.objects.create(user=user, **teacher_data)
-        elif role == "admin" and admin_data:
-            AdminProfile.objects.create(user=user, **admin_data)
+        password = validated_data.pop("password")
+        user = CustomUser(**validated_data)
+        user.set_password(password)
+        user.save()
         return user
- 
