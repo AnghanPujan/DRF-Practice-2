@@ -2,3 +2,4 @@ accounts/__pycache__
 adv_DRF/__pycache__
 caching/__pycache__
 env
+accounts\migrations\__pycache__

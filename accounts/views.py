@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView 
 from rest_framework.response import Response
 from rest_framework import status
@@ -55,16 +55,7 @@ class RegisterAPIView(APIView):
     authentication_classes = []  
     permission_classes = [IsAdmin] 
 
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            return Response({
-                "message": "User registered successfully",
-                "username": user.username,
-                "email": user.email
-            }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
     
 
 class UserCreateView(generics.CreateAPIView):
@@ -74,18 +65,62 @@ class UserCreateView(generics.CreateAPIView):
 class SuperAdminDashboard(APIView):
     permission_classes = [IsSuperAdmin]
 
-    def get(self, request):
+    def get(self, request, pk=None):
+        if pk:
+            user = get_object_or_404(CustomUser, pk=pk)
+            serializer = CustomUserSerializer(user)
+            return Response(serializer.data)
+
         all_users = CustomUser.objects.all()
-        total_users = CustomUser.objects.count()
-        active_users = CustomUser.objects.filter(is_active=True)
-        inactive = total_users - len(active_users)
+        total_users = all_users.count()
+        active_users = all_users.filter(is_active=True).count()
+        inactive = total_users - active_users
 
         serializer = CustomUserSerializer(all_users, many=True)
-        print(json.dumps(serializer.data))
-    
+
         return Response({
-            'total_users' : total_users,
-            "active_users" : len(active_users),
-            "inactive users" : inactive,
-            "all_users" : serializer.data
-        })  
+            'total_users': total_users,
+            "active_users": active_users,
+            "inactive_users": inactive,
+            "all_users": serializer.data
+        })
+
+    def post(self, request):
+        serializer = CustomUserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({
+                "message": "User created successfully",
+                "user": CustomUserSerializer(user).data
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk):
+        user = get_object_or_404(CustomUser, pk=pk)
+        serializer = CustomUserSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "message": "User updated successfully",
+                "user": serializer.data
+            })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk):
+        user = get_object_or_404(CustomUser, pk=pk)
+        serializer = CustomUserSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "message": "User partially updated successfully",
+                "user": serializer.data
+            })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        user = get_object_or_404(CustomUser, pk=pk)
+        if user.role == 'super admin':
+            return Response({"message": "Cannot delete a super admin."}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)

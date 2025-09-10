@@ -28,7 +28,7 @@ class StudentProfile(BaseProfile):
     course = models.CharField(max_length=100)
     year = models.IntegerField()
     section = models.CharField(max_length=10)
-
+    
 
 class TeacherProfile(BaseProfile):
     subject = models.CharField(max_length=50)
