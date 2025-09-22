@@ -26,14 +26,14 @@
     const username = localStorage.getItem("username");
     if (!token) {
       // If no token, redirect to login
-      window.location.href = "login.html";
+      window.location.href = "../login.html";
     }
     document.getElementById("username").textContent = username;
     // Logout
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.removeItem("authToken");
       localStorage.removeItem("username");
-      window.location.href = "../login.html";
+      window.location.href = "./Html Templates/login.html";
     });
   </script>
 </body>
